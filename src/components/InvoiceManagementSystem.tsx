@@ -1,5 +1,646 @@
 import React, { useState } from 'react';
-import './InvoiceManagement.css';
+
+// Invoice Management System styles
+const invoiceStyles = `
+  .invoice-management-system {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .tabs {
+    display: flex;
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 15px 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    min-width: 120px;
+  }
+
+  .tab:hover {
+    background: #f8f9fa;
+    transform: translateY(-2px);
+  }
+
+  .tab.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+  }
+
+  .content {
+    background: white;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .tab-content {
+    width: 100%;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  .tab-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e9ecef;
+  }
+
+  .tab-header h2 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.8rem;
+    font-weight: 600;
+  }
+
+  .summary-cards {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .summary-card {
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    min-width: 150px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(116, 185, 255, 0.3);
+  }
+
+  .summary-card.alert {
+    background: linear-gradient(135deg, #e17055 0%, #d63031 100%);
+    box-shadow: 0 4px 6px rgba(225, 112, 85, 0.3);
+  }
+
+  .summary-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    font-weight: 500;
+    opacity: 0.9;
+  }
+
+  .summary-card .amount {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+  }
+
+  .table-container {
+    overflow-x: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .data-table th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .data-table td {
+    padding: 15px 12px;
+    border-bottom: 1px solid #e9ecef;
+    font-size: 0.9rem;
+    vertical-align: middle;
+  }
+
+  .data-table tbody tr:hover {
+    background: #f8f9fa;
+    transform: scale(1.01);
+    transition: all 0.2s ease;
+  }
+
+  .data-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .data-table tbody tr:nth-child(even) {
+    background: #f8f9fa;
+  }
+
+  .data-table tbody tr:nth-child(even):hover {
+    background: #e9ecef;
+  }
+
+  .status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    min-width: 70px;
+    text-align: center;
+  }
+
+  .status-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+
+  .status-warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+  }
+
+  .status-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  .status-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+  }
+
+  .status-default {
+    background: #e2e3e5;
+    color: #383d41;
+    border: 1px solid #d6d8db;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: 10px;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 2px solid #667eea;
+    color: #667eea;
+  }
+
+  .btn-outline:hover {
+    background: #667eea;
+    color: white;
+  }
+
+  .btn-sm {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    margin-right: 5px;
+  }
+
+  .btn-sm:last-child {
+    margin-right: 0;
+  }
+
+  /* レスポンシブデザイン */
+  @media (max-width: 768px) {
+    .invoice-management-system {
+      padding: 10px;
+    }
+    
+    .header h1 {
+      font-size: 2rem;
+    }
+    
+    .tabs {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .tab {
+      flex: none;
+      width: 100%;
+    }
+    
+    .tab-header {
+      flex-direction: column;
+      gap: 15px;
+      align-items: flex-start;
+    }
+    
+    .summary-cards {
+      flex-direction: column;
+    }
+    
+    .summary-card {
+      min-width: 100%;
+    }
+    
+    .data-table {
+      font-size: 0.8rem;
+    }
+    
+    .data-table th,
+    .data-table td {
+      padding: 10px 8px;
+    }
+    
+    .btn {
+      padding: 8px 16px;
+      font-size: 0.8rem;
+    }
+    
+    .btn-sm {
+      padding: 4px 8px;
+      font-size: 0.7rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .header h1 {
+      font-size: 1.5rem;
+    }
+    
+    .content {
+      padding: 20px;
+    }
+    
+    .tab-header h2 {
+      font-size: 1.5rem;
+    }
+    
+    .data-table {
+      font-size: 0.7rem;
+    }
+    
+    .data-table th,
+    .data-table td {
+      padding: 8px 6px;
+    }
+    
+    .btn {
+      padding: 6px 12px;
+      font-size: 0.7rem;
+    }
+    
+    .btn-sm {
+      padding: 4px 6px;
+      font-size: 0.6rem;
+    }
+  }
+
+  /* スクロールバーのスタイリング */
+  .table-container::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  .table-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+
+  .table-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+  /* アニメーション */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .tab-content {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  /* フォーカス時のスタイル */
+  .btn:focus,
+  .tab:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+  }
+
+  /* 印刷時のスタイル */
+  @media print {
+    .invoice-management-system {
+      background: white;
+      padding: 0;
+    }
+    
+    .header {
+      background: none;
+      color: black;
+      box-shadow: none;
+    }
+    
+    .tabs {
+      display: none;
+    }
+    
+    .content {
+      box-shadow: none;
+    }
+    
+    .btn {
+      display: none;
+    }
+  }
+    border: 1px solid #ffeaa7;
+  }
+
+  .status-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  .status-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+  }
+
+  .status-default {
+    background: #e2e3e5;
+    color: #383d41;
+    border: 1px solid #d6d8db;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: 10px;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .btn:focus,
+  .tab:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 2px solid #667eea;
+    color: #667eea;
+  }
+
+  .btn-outline:hover {
+    background: #667eea;
+    color: white;
+  }
+
+  .btn-sm {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    margin-right: 5px;
+  }
+
+  .btn-sm:last-child {
+    margin-right: 0;
+  }
+
+  .table-container::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  .table-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+
+  .table-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .invoice-management-system {
+      padding: 10px;
+    }
+    
+    .header h1 {
+      font-size: 2rem;
+    }
+    
+    .tabs {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .tab {
+      flex: none;
+      width: 100%;
+    }
+    
+    .tab-header {
+      flex-direction: column;
+      gap: 15px;
+      align-items: flex-start;
+    }
+    
+    .summary-cards {
+      flex-direction: column;
+    }
+    
+    .summary-card {
+      min-width: 100%;
+    }
+    
+    .data-table {
+      font-size: 0.8rem;
+    }
+    
+    .data-table th,
+    .data-table td {
+      padding: 10px 8px;
+    }
+    
+    .btn {
+      padding: 8px 16px;
+      font-size: 0.8rem;
+    }
+    
+    .btn-sm {
+      padding: 4px 8px;
+      font-size: 0.7rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .header h1 {
+      font-size: 1.5rem;
+    }
+    
+    .content {
+      padding: 20px;
+    }
+    
+    .tab-header h2 {
+      font-size: 1.5rem;
+    }
+    
+    .data-table {
+      font-size: 0.7rem;
+    }
+    
+    .data-table th,
+    .data-table td {
+      padding: 8px 6px;
+    }
+    
+    .btn {
+      padding: 6px 12px;
+      font-size: 0.7rem;
+    }
+    
+    .btn-sm {
+      padding: 4px 6px;
+      font-size: 0.6rem;
+    }
+  }
+
+  @media print {
+    .invoice-management-system {
+      background: white;
+      padding: 0;
+    }
+    
+    .header {
+      background: none;
+      color: black;
+      box-shadow: none;
+    }
+    
+    .tabs {
+      display: none;
+    }
+    
+    .content {
+      box-shadow: none;
+    }
+    
+    .btn {
+      display: none;
+    }
+  }
+`;
+
+// Add styles to head
+const styleElement = document.createElement('style');
+styleElement.textContent = invoiceStyles;
+document.head.appendChild(styleElement);
 
 interface DeliveryData {
   id: string;
