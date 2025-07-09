@@ -1,31 +1,40 @@
-import { useAuthenticator } from '@aws-amplify/ui-react';
+import { useState } from 'react';
 import InvoiceManagementSystem from './components/InvoiceManagementSystem';
+import PurchaseManagementSystem from './components/PurchaseManagementSystem';
 import './App.css';
 
 function App() {
-  const { signOut } = useAuthenticator();
+  const [activeSystem, setActiveSystem] = useState<'invoice' | 'purchase'>('invoice');
 
   return (
-    <main>
-      <div style={{ position: 'fixed', top: '20px', right: '20px', zIndex: 1000 }}>
-        <button 
-          onClick={signOut}
-          style={{
-            padding: '10px 20px',
-            background: '#dc3545',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontSize: '0.9rem',
-            fontWeight: '500'
-          }}
-        >
-          Sign out
-        </button>
-      </div>
-      <InvoiceManagementSystem />
-    </main>
+    <div className="app-container">
+      <header className="app-header">
+        <div className="header-content">
+          <h1 className="app-title">
+            {activeSystem === 'invoice' ? '納品・請求管理システム' : '仕入・支払管理システム'}
+          </h1>
+          <nav className="system-nav">
+            <button 
+              onClick={() => setActiveSystem('invoice')}
+              className={`nav-button ${activeSystem === 'invoice' ? 'active invoice' : ''}`}
+            >
+              📋 納品・請求管理
+            </button>
+            <button 
+              onClick={() => setActiveSystem('purchase')}
+              className={`nav-button ${activeSystem === 'purchase' ? 'active purchase' : ''}`}
+            >
+              🛒 仕入・支払管理
+            </button>
+          </nav>
+        </div>
+      </header>
+
+      <main className="app-main">
+        {activeSystem === 'invoice' && <InvoiceManagementSystem />}
+        {activeSystem === 'purchase' && <PurchaseManagementSystem />}
+      </main>
+    </div>
   );
 }
 
