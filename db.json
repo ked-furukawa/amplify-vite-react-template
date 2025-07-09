@@ -1,0 +1,289 @@
+{
+  "companies": [
+    {
+      "id": "comp001",
+      "name": "株式会社サンプル",
+      "address": "東京都渋谷区1-1-1",
+      "phone": "03-1234-5678",
+      "email": "contact@sample.co.jp",
+      "status": "active"
+    },
+    {
+      "id": "comp002",
+      "name": "テスト商事株式会社",
+      "address": "大阪府大阪市2-2-2",
+      "phone": "06-2345-6789",
+      "email": "info@test.co.jp",
+      "status": "active"
+    },
+    {
+      "id": "comp003",
+      "name": "開発工業株式会社",
+      "address": "名古屋市中区3-3-3",
+      "phone": "052-3456-7890",
+      "email": "dev@company.co.jp",
+      "status": "active"
+    }
+  ],
+  "products": [
+    {
+      "id": "prod001",
+      "code": "PROD001",
+      "name": "商品A",
+      "unitPrice": 1000,
+      "category": "カテゴリA",
+      "unit": "個",
+      "status": "active"
+    },
+    {
+      "id": "prod002",
+      "code": "PROD002",
+      "name": "商品B",
+      "unitPrice": 2500,
+      "category": "カテゴリB",
+      "unit": "個",
+      "status": "active"
+    },
+    {
+      "id": "prod003",
+      "code": "PROD003",
+      "name": "商品C",
+      "unitPrice": 500,
+      "category": "カテゴリA",
+      "unit": "セット",
+      "status": "active"
+    }
+  ],
+  "deliveryNotes": [
+    {
+      "id": "del001",
+      "companyId": "comp001",
+      "companyName": "株式会社サンプル",
+      "productCode": "PROD001",
+      "productName": "商品A",
+      "quantity": 10,
+      "unitPrice": 1000,
+      "totalAmount": 10000,
+      "deliveryDate": "2024-01-15",
+      "status": "発行済み",
+      "createdAt": "2024-01-15T09:00:00Z"
+    },
+    {
+      "id": "del002",
+      "companyId": "comp002",
+      "companyName": "テスト商事株式会社",
+      "productCode": "PROD002",
+      "productName": "商品B",
+      "quantity": 5,
+      "unitPrice": 2500,
+      "totalAmount": 12500,
+      "deliveryDate": "2024-01-16",
+      "status": "発行済み",
+      "createdAt": "2024-01-16T10:00:00Z"
+    },
+    {
+      "id": "del003",
+      "companyId": "comp001",
+      "companyName": "株式会社サンプル",
+      "productCode": "PROD003",
+      "productName": "商品C",
+      "quantity": 20,
+      "unitPrice": 500,
+      "totalAmount": 10000,
+      "deliveryDate": "2024-01-17",
+      "status": "未発行",
+      "createdAt": "2024-01-17T11:00:00Z"
+    }
+  ],
+  "invoices": [
+    {
+      "id": "inv001",
+      "invoiceNumber": "INV-2024-001",
+      "companyId": "comp001",
+      "companyName": "株式会社サンプル",
+      "totalAmount": 20000,
+      "issueDate": "2024-01-20",
+      "dueDate": "2024-02-20",
+      "status": "発行済み",
+      "deliveryNoteIds": ["del001", "del003"],
+      "createdAt": "2024-01-20T09:00:00Z"
+    },
+    {
+      "id": "inv002",
+      "invoiceNumber": "INV-2024-002",
+      "companyId": "comp002",
+      "companyName": "テスト商事株式会社",
+      "totalAmount": 12500,
+      "issueDate": "2024-01-21",
+      "dueDate": "2024-02-21",
+      "status": "発行済み",
+      "deliveryNoteIds": ["del002"],
+      "createdAt": "2024-01-21T10:00:00Z"
+    }
+  ],
+  "accountsReceivable": [
+    {
+      "id": "ar001",
+      "invoiceId": "inv001",
+      "invoiceNumber": "INV-2024-001",
+      "companyId": "comp001",
+      "companyName": "株式会社サンプル",
+      "amount": 20000,
+      "dueDate": "2024-02-20",
+      "status": "未入金",
+      "overdueDays": 0,
+      "paidAmount": 0,
+      "remainingAmount": 20000,
+      "createdAt": "2024-01-20T09:00:00Z"
+    },
+    {
+      "id": "ar002",
+      "invoiceId": "inv002",
+      "invoiceNumber": "INV-2024-002",
+      "companyId": "comp002",
+      "companyName": "テスト商事株式会社",
+      "amount": 12500,
+      "dueDate": "2024-02-21",
+      "status": "一部入金",
+      "overdueDays": 0,
+      "paidAmount": 5000,
+      "remainingAmount": 7500,
+      "createdAt": "2024-01-21T10:00:00Z"
+    }
+  ],
+  "paymentRecords": [
+    {
+      "id": "pay001",
+      "receivableId": "ar002",
+      "date": "2024-01-25",
+      "amount": 5000,
+      "accountName": "普通預金",
+      "memo": "部分入金",
+      "status": "照合済み",
+      "createdAt": "2024-01-25T14:00:00Z"
+    },
+    {
+      "id": "pay002",
+      "receivableId": null,
+      "date": "2024-01-26",
+      "amount": 8000,
+      "accountName": "普通預金",
+      "memo": "不明な入金",
+      "status": "未照合",
+      "createdAt": "2024-01-26T15:00:00Z"
+    }
+  ],
+  "orderItems": [
+    {
+      "id": "order001",
+      "materialCode": "MAT001",
+      "materialName": "原材料A",
+      "supplierId": "comp003",
+      "supplierName": "開発工業株式会社",
+      "currentStock": 50,
+      "orderPoint": 100,
+      "orderQuantity": 200,
+      "unitPrice": 300,
+      "totalAmount": 60000,
+      "orderDate": "2024-01-18",
+      "expectedDeliveryDate": "2024-01-25",
+      "status": "発注済み",
+      "createdAt": "2024-01-18T08:00:00Z"
+    },
+    {
+      "id": "order002",
+      "materialCode": "MAT002",
+      "materialName": "原材料B",
+      "supplierId": "comp002",
+      "supplierName": "テスト商事株式会社",
+      "currentStock": 30,
+      "orderPoint": 50,
+      "orderQuantity": 100,
+      "unitPrice": 150,
+      "totalAmount": 15000,
+      "orderDate": "2024-01-19",
+      "expectedDeliveryDate": "2024-01-26",
+      "status": "発注済み",
+      "createdAt": "2024-01-19T09:00:00Z"
+    },
+    {
+      "id": "order003",
+      "materialCode": "MAT003",
+      "materialName": "原材料C",
+      "supplierId": "comp001",
+      "supplierName": "株式会社サンプル",
+      "currentStock": 20,
+      "orderPoint": 80,
+      "orderQuantity": 150,
+      "unitPrice": 200,
+      "totalAmount": 30000,
+      "orderDate": null,
+      "expectedDeliveryDate": null,
+      "status": "未発注",
+      "createdAt": "2024-01-20T10:00:00Z"
+    }
+  ],
+  "documentVerifications": [
+    {
+      "id": "doc001",
+      "documentType": "納品書",
+      "supplierId": "comp003",
+      "supplierName": "開発工業株式会社",
+      "orderIds": ["order001"],
+      "ocrStatus": "完了",
+      "matchStatus": "一致",
+      "discrepancies": [],
+      "uploadDate": "2024-01-25T10:00:00Z",
+      "verifiedDate": "2024-01-25T10:30:00Z"
+    },
+    {
+      "id": "doc002",
+      "documentType": "請求書",
+      "supplierId": "comp002",
+      "supplierName": "テスト商事株式会社",
+      "orderIds": ["order002"],
+      "ocrStatus": "完了",
+      "matchStatus": "不一致",
+      "discrepancies": ["金額相違: 15000円 vs 14500円", "数量相違: 100個 vs 95個"],
+      "uploadDate": "2024-01-26T11:00:00Z",
+      "verifiedDate": null
+    }
+  ],
+  "paymentSchedules": [
+    {
+      "id": "schedule001",
+      "supplierId": "comp003",
+      "supplierName": "開発工業株式会社",
+      "invoiceNumber": "SUP-INV-001",
+      "amount": 60000,
+      "dueDate": "2024-02-25",
+      "status": "予定",
+      "reminderSent": false,
+      "createdAt": "2024-01-25T12:00:00Z"
+    },
+    {
+      "id": "schedule002",
+      "supplierId": "comp002",
+      "supplierName": "テスト商事株式会社",
+      "invoiceNumber": "SUP-INV-002",
+      "amount": 15000,
+      "dueDate": "2024-02-26",
+      "status": "予定",
+      "reminderSent": true,
+      "reminderDate": "2024-01-26T13:00:00Z",
+      "createdAt": "2024-01-26T12:00:00Z"
+    }
+  ],
+  "accountsPayable": [
+    {
+      "id": "ap001",
+      "scheduleId": "schedule001",
+      "supplierName": "開発工業株式会社",
+      "invoiceNumber": "SUP-INV-001",
+      "amount": 60000,
+      "paymentDate": "2024-02-25",
+      "status": "未照合",
+      "createdAt": "2024-01-25T12:00:00Z"
+    }
+  ]
+} 
