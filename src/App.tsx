@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Amplify } from 'aws-amplify';
 import InvoiceManagementSystem from './components/InvoiceManagementSystem';
 import PurchaseManagementSystem from './components/PurchaseManagementSystem';
+import CSVUploadSystem from './components/CSVUploadSystem';
 
 // App styles
 const appStyles = `
@@ -91,6 +93,10 @@ const appStyles = `
     background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
   }
 
+  .nav-button.active.upload {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  }
+
   .app-main {
     flex: 1;
     padding: 2rem;
@@ -131,14 +137,43 @@ styleElement.textContent = appStyles;
 document.head.appendChild(styleElement);
 
 function App() {
-  const [activeSystem, setActiveSystem] = useState<'invoice' | 'purchase'>('invoice');
+  const [activeSystem, setActiveSystem] = useState<'invoice' | 'purchase' | 'upload'>('invoice');
+
+  // Configure Amplify on component mount
+  useEffect(() => {
+    const configureAmplify = async () => {
+      try {
+        const amplifyConfig = await import('../amplify_outputs.json');
+        Amplify.configure(amplifyConfig.default);
+        console.log('✅ Amplify configured successfully');
+      } catch (error) {
+        console.warn('⚠️ amplify_outputs.json not found. Please ensure Amplify sandbox is running.');
+        console.error(error);
+      }
+    };
+
+    configureAmplify();
+  }, []);
+
+  const getSystemTitle = () => {
+    switch (activeSystem) {
+      case 'invoice':
+        return '納品・請求管理システム';
+      case 'purchase':
+        return '仕入・支払管理システム';
+      case 'upload':
+        return 'CSVファイル アップロードシステム';
+      default:
+        return '管理システム';
+    }
+  };
 
   return (
     <div className="app-container">
       <header className="app-header">
         <div className="header-content">
           <h1 className="app-title">
-            {activeSystem === 'invoice' ? '納品・請求管理システム' : '仕入・支払管理システム'}
+            {getSystemTitle()}
           </h1>
           <nav className="system-nav">
             <button 
@@ -153,6 +188,12 @@ function App() {
             >
               🛒 仕入・支払管理
             </button>
+            <button 
+              onClick={() => setActiveSystem('upload')}
+              className={`nav-button ${activeSystem === 'upload' ? 'active upload' : ''}`}
+            >
+              📊 CSV アップロード
+            </button>
           </nav>
         </div>
       </header>
@@ -160,6 +201,7 @@ function App() {
       <main className="app-main">
         {activeSystem === 'invoice' && <InvoiceManagementSystem />}
         {activeSystem === 'purchase' && <PurchaseManagementSystem />}
+        {activeSystem === 'upload' && <CSVUploadSystem />}
       </main>
     </div>
   );
